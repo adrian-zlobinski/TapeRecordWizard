@@ -1,0 +1,246 @@
+﻿<Window x:Class="TapeRecordWizard.Views.PlayListCreator"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TapeRecordWizard.Views"
+        mc:Ignorable="d"
+        Title="PlayList Creator" Height="100" Width="100" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="0" Grid.ColumnSpan="2">
+                <Label Content="CassetteType" VerticalAlignment="Center"/>
+                <ComboBox Name="cmbCassetteType" Margin="10" VerticalAlignment="Center" MinWidth="50"
+                  ItemsSource="{Binding CassetteTypes}"
+                  DisplayMemberPath="Key"
+                  SelectedValuePath="Value"
+                  SelectedValue="{Binding CurrentPlaylist.CassetteType}"
+                      SelectionChanged="cmbCassetteType_SelectionChanged">
+                </ComboBox>
+                <Label Content="Playlist name" VerticalAlignment="Center"/>
+                <TextBox Width="200" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2">
+                <DataGrid x:Name="dgSongs" AutoGenerateColumns="False"
+                                   CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
+                                   CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False"
+                                   IsReadOnly="True" SelectionMode="Extended"
+                                   RowHeaderWidth="20" MinWidth="400" Margin="5"
+                                   ItemsSource="{Binding CurrentPlaylist.Songs}"
+                                   SelectionChanged="dgSongs_SelectionChanged"
+                                   SelectedItem="{Binding DgSelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                                   SelectedIndex="{Binding DgSongsSelectedIndex, UpdateSourceTrigger=PropertyChanged}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nr." Width="50" Binding="{Binding OrderNo}"/>
+                        <DataGridTextColumn Header="File" Width="Auto" Binding="{Binding FileName}"/>
+                        <DataGridTextColumn Header="Duration" Binding="{Binding Duration, StringFormat=hh\\:mm\\:ss}" Width="60">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Side" Width="35" Binding="{Binding Side}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <StackPanel Orientation="Vertical">
+                    <Button Content="Add files..." Margin="5" Name="btnAddFile" Click="btnAddFile_Click"
+                            IsEnabled="{Binding CanAddSongs}"/>
+                    <Button Content="Remove selected file(s)" Margin="5" Name="btnRemoveSelection" Click="btnRemoveSelection_Click"/>
+                    <Button Content="Remove all files" Margin="5" Name="btnRemoveAll" Click="btnRemoveAll_Click"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="btnTop" Content="^^" Margin="5" Grid.Column="0" ToolTip="Move to top" Click="btnTop_Click" 
+                            IsEnabled="{Binding DataContext.CanMoveUp,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button x:Name="btnOneUp" Content="^" Margin="5" Grid.Column="1" ToolTip="Move one up" Click="btnOneUp_Click"
+                            IsEnabled="{Binding DataContext.CanMoveUp,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button x:Name="btnOneDown" Content="v" Margin="5" Grid.Column="2" ToolTip="Move one down" Click="btnOneDown_Click"
+                            IsEnabled="{Binding DataContext.CanMoveDown, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button x:Name="btnBottom" Content="vv" Margin="5" Grid.Column="3" ToolTip="Move to bottom" Click="btnBottom_Click"
+                            IsEnabled="{Binding DataContext.CanMoveDown, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="btnSideA" Content="Side A" Margin="5" Grid.Column="0" ToolTip="Assign to Side A" Click="btnSideA_Click"
+                            IsEnabled="{Binding CanAssignToSideA, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                        <Button x:Name="btnAutoSideArrange" Content="Auto" Margin="5" Grid.Column="1" ToolTip="Auto arrange songs on cassete side with best fit" Click="btnAutoSideArrange_Click"/>
+                        <Button x:Name="btnSideb" Content="Side B" Margin="5" Grid.Column="2" ToolTip="Assign to Side B" Click="btnSideb_Click"
+                            IsEnabled="{Binding CanAssignToSideB, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                    </Grid>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" x:Name="spFadeIn">
+                            <Label Content="Fade In:" Width="65"/>
+                            <Slider x:Name="slFadeIn" Minimum="0" Maximum="3" SmallChange="0.1" LargeChange="1" Margin="5"
+                                    TickPlacement="BottomRight" Foreground="Black" IsSnapToTickEnabled="True" TickFrequency="0.1"
+                                    Width="100" VerticalAlignment="Center"
+                                    Value="{Binding DataContext.CurrentPlaylist.FadeIn, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Text="{Binding ElementName=slFadeIn, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat=0.0 sec.}"
+                                     TextAlignment="Right" Width="Auto" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" x:Name="spFadeOut">
+                            <Label Content="Fade Out:" Width="65"/>
+                            <Slider x:Name="slFadeOut" Minimum="0" Maximum="3" SmallChange="0.1" LargeChange="1" Margin="5"
+                                    TickPlacement="BottomRight" Foreground="Black" IsSnapToTickEnabled="True" TickFrequency="0.1"
+                                    Width="100" VerticalAlignment="Center"
+                                    Value="{Binding DataContext.CurrentPlaylist.FadeOut, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Text="{Binding ElementName=slFadeOut, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat=0.0 sec.}"
+                                     TextAlignment="Right" Width="Auto" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Label Content="Gap between songs:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider x:Name="slSilenceGap" Minimum="0" Maximum="3" SmallChange="0.1" LargeChange="1" Margin="5"
+                            TickPlacement="BottomRight" Foreground="Black" IsSnapToTickEnabled="True" TickFrequency="0.1"
+                                Width="170" VerticalAlignment="Center" 
+                                Value="{Binding DataContext.CurrentPlaylist.GapBetweenSongs, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                                ValueChanged="slSilenceGap_ValueChanged"/>
+                        <TextBlock Text="{Binding ElementName=slSilenceGap, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat=0.0 sec.}"
+                                   TextAlignment="Right" Width="Auto" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <CheckBox Content="Normalize songs" Margin="5" VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Label Content="Delay time" VerticalAlignment="Center"/>
+                        <TextBox Width="30" VerticalAlignment="Center"/>
+                        <Label Content="sec." VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="► A" Name="btnPlaySideA" Click="PlaySongs" Margin="5" Tag="SideA" FontSize="30" Padding="10"
+                                IsEnabled="{Binding CanPlaySideA, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding PlayingSideA, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="True">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard x:Name="sb1">
+                                                    <BeginStoryboard.Storyboard>
+                                                        <Storyboard AutoReverse="True" RepeatBehavior="Forever">
+                                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                                <EasingColorKeyFrame KeyTime="0" Value="LightGreen"/>
+                                                                <EasingColorKeyFrame KeyTime="0:0:1" Value="#FFDDDDDD">
+                                                                    <EasingColorKeyFrame.EasingFunction>
+                                                                        <QuarticEase EasingMode="EaseInOut"/>
+                                                                    </EasingColorKeyFrame.EasingFunction>
+                                                                </EasingColorKeyFrame>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </BeginStoryboard.Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <StopStoryboard BeginStoryboardName="sb1"/>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button Content="■" Name="btnStop" Click="btnStop_Click" Margin="5" FontSize="30" Padding="10"/>
+                        <Button Content="► B" Name="btnPlaySideB" Click="PlaySongs" Margin="5" Tag="SideB" FontSize="30" Padding="10"
+                                IsEnabled="{Binding CanPlaySideB, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding PlayingSideB, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="True">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard x:Name="sb1">
+                                                    <BeginStoryboard.Storyboard>
+                                                        <Storyboard AutoReverse="True" RepeatBehavior="Forever">
+                                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                                <EasingColorKeyFrame KeyTime="0" Value="LightGreen"/>
+                                                                <EasingColorKeyFrame KeyTime="0:0:1" Value="#FFDDDDDD">
+                                                                    <EasingColorKeyFrame.EasingFunction>
+                                                                        <QuarticEase EasingMode="EaseInOut"/>
+                                                                    </EasingColorKeyFrame.EasingFunction>
+                                                                </EasingColorKeyFrame>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </BeginStoryboard.Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <StopStoryboard BeginStoryboardName="sb1"/>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding PlayBackTime, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh':'mm':'ss}}"
+                               FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding PlayedSideDuration, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh':'mm':'ss}}"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel x:Name="spErrors" Orientation="Vertical" Grid.ColumnSpan="2" Grid.Row="2">
+                <TextBlock Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="WrapWithOverflow" Margin="5 0"
+                   Text="Added songs will not fit on selected cassete type. Reduce list of songs or change cassete type" 
+                   Foreground="Red" Visibility="{Binding NoFitOnTape}"/>
+                <TextBlock Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="WrapWithOverflow" Margin="5 0"
+                   Text="Songs added to side A will not fit. Chande song side assignment or cassette tape type to longer."
+                   Foreground="Red" Visibility="{Binding NoFitOnSideA}"/>
+                <TextBlock Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="WrapWithOverflow" Margin="5 0"
+                   Text="Songs added to side B will not fit. Chande song side assignment or cassette tape type to longer."
+                   Foreground="Red" Visibility="{Binding NoFitOnSideB}"/>
+            </StackPanel>
+        </Grid>
+        <StatusBar DockPanel.Dock="Bottom"  VerticalAlignment="Bottom">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Total songs:" VerticalAlignment="Center" Margin="0" Padding="1"/>
+                    <TextBlock Text="{Binding TotalSongsCount, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                           VerticalAlignment="Center" Margin="0" Padding="1"/>
+                    <TextBlock Text="{Binding TotalDuration, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat=\\(hh\\:mm\\:ss\\)}"
+                           VerticalAlignment="Center" Margin="0" Padding="1"/>
+                </StackPanel>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Songs on Side A" VerticalAlignment="Center" Margin="0" Padding="1"/>
+                    <TextBlock Text="{Binding SideASongsCount, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                       VerticalAlignment="Center" Margin="0" Padding="1"/>
+                    <TextBlock Text="{Binding SideADuration, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat=\\(hh\\:mm\\:ss\\)}"
+                       VerticalAlignment="Center" Margin="0" Padding="1"/>
+                </StackPanel>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Songs on Side B" VerticalAlignment="Center" Margin="0" Padding="1"/>
+                    <TextBlock Text="{Binding SideBSongsCount, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                       VerticalAlignment="Center" Margin="0" Padding="1"/>
+                    <TextBlock Text="{Binding SideBDuration, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat=\\(hh\\:mm\\:ss\\)}"
+                       VerticalAlignment="Center" Margin="0" Padding="1"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+    </DockPanel>
+</Window>
