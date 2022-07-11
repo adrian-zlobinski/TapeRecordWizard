@@ -19,12 +19,6 @@ namespace TapeRecordWizard.Views
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private WaveOutEvent outputDevice;
-        private char playingSide = '-';
-
-        private System.Timers.Timer playbackTimer;
-        public TimeSpan PlayBackTime{ get; set; }
-
         public void OnPropertyChanged(string property)
         {
             if(PropertyChanged != null)
@@ -36,111 +30,12 @@ namespace TapeRecordWizard.Views
         {
             InitializeComponent();
             UpdateOrderingButtons();
-            playbackTimer = new System.Timers.Timer(100) { AutoReset = true };
-            playbackTimer.Elapsed += PlaybackTimer_Elapsed;
-            PlayBackTime = TimeSpan.FromSeconds(0);
-        }
-
-        private void PlaybackTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            PlayBackTime = outputDevice.GetPositionTimeSpan();
-            OnPropertyChanged(nameof(PlayBackTime));
         }
 
         public PlayListCreator(Window owner) : this()
         {
             this.Owner = owner;
         }
-
-        #region Functional Properties
-
-
-
-        public bool CanAssignToSideA
-        {
-            get
-            {
-                if (Model.ModelInstance.CurrentPlaylist.Songs.Count > 0)
-                {
-                    if (dgSongs.SelectedItems.Count == 1)
-                    {
-                        Song song = dgSongs.SelectedItem as Song;
-                        if (song.Side != "A")
-                            return true;
-                    }
-                }
-                return false;
-            }
-        }
-
-        public bool CanAssignToSideB
-        {
-            get
-            {
-                if (Model.ModelInstance.CurrentPlaylist.Songs.Count > 0)
-                {
-                    if (dgSongs.SelectedItems.Count == 1)
-                    {
-                        Song song = dgSongs.SelectedItem as Song;
-                        if (song.Side != "B")
-                            return true;
-                    }
-                }
-                return false;
-            }
-        }
-
-        public bool CanPlaySideA
-        {
-            get
-            {
-                return Model.ModelInstance.CurrentPlaylist.SideASongs?.Count > 0;
-            }
-        }
-        public bool CanPlaySideB
-        {
-            get
-            {
-                return Model.ModelInstance.CurrentPlaylist.SideBSongs?.Count > 0;
-            }
-        }
-        //public bool CanAddSongs
-        //{
-        //    get
-        //    {
-        //        return cmbCassetteType.SelectedIndex >= 0;
-        //    }
-        //}
-
-        public bool PlayingSideA
-        {
-            get
-            {
-                return outputDevice?.PlaybackState == PlaybackState.Playing && playingSide == 'A';
-            }
-        }
-
-        public bool PlayingSideB
-        {
-            get
-            {
-                return outputDevice?.PlaybackState == PlaybackState.Playing && playingSide == 'B';
-            }
-        }
-
-        public TimeSpan PlayedSideDuration
-        {
-            get
-            {
-                if (PlayingSideA)
-                    return SideADuration;
-                if (PlayingSideB)
-                    return SideBDuration;
-                return TimeSpan.FromSeconds(0);
-            }
-        }
-
-        #endregion
 
         #region Events
         private void btnAddFile_Click(object sender, RoutedEventArgs e)
@@ -272,16 +167,9 @@ namespace TapeRecordWizard.Views
         {
             Model.ModelInstance.UpdateCanMoveUpDown();
             Model.ModelInstance.NotFitOnTapeChanged();
-            OnPropertyChanged(nameof(CanAssignToSideA));
-            OnPropertyChanged(nameof(CanAssignToSideB));
-            OnPropertyChanged(nameof(TotalSongsCount));
-            OnPropertyChanged(nameof(TotalDuration));
-            OnPropertyChanged(nameof(SideASongsCount));
-            OnPropertyChanged(nameof(SideADuration));
-            OnPropertyChanged(nameof(SideBDuration));
-            OnPropertyChanged(nameof(SideBSongsCount));
-            OnPropertyChanged(nameof(CanPlaySideA));
-            OnPropertyChanged(nameof(CanPlaySideB));
+            Model.ModelInstance.CanAssignToSideChanged();
+            Model.ModelInstance.CurrentPlaylist.SongsChanged();
+            Model.ModelInstance.CanPlaySideChanged();
         }
 
         private void RefreshSongsGrid()
@@ -298,55 +186,6 @@ namespace TapeRecordWizard.Views
             foreach(var song in Model.ModelInstance.CurrentPlaylist.Songs.OrderBy(x=>x.OrderNo))
             {
                 song.OrderNo = couter++;
-            }
-        }
-
-
-        public int TotalSongsCount
-        {
-            get
-            {
-                return Model.ModelInstance.CurrentPlaylist.Songs.Count;
-            }
-        }
-
-        public TimeSpan TotalDuration
-        {
-            get
-            {
-                return Model.ModelInstance.CurrentPlaylist.TotalDuration;
-            }
-        }
-
-        public int SideASongsCount
-        {
-            get
-            {
-                return Model.ModelInstance.CurrentPlaylist.SideASongs.Count;
-            }
-        }
-
-        public TimeSpan SideADuration
-        {
-            get
-            {
-                return Model.ModelInstance.CurrentPlaylist.SideADuration;
-            }
-        }
-
-        public int SideBSongsCount
-        {
-            get
-            {
-                return Model.ModelInstance.CurrentPlaylist.SideBSongs.Count;
-            }
-        }
-
-        public TimeSpan SideBDuration
-        {
-            get
-            {
-                return Model.ModelInstance.CurrentPlaylist.SideBDuration;
             }
         }
 
@@ -404,21 +243,6 @@ namespace TapeRecordWizard.Views
             firstSong = null;
         }
 
-        private void OutputDevice_PlaybackStopped(object sender, StoppedEventArgs e)
-        {
-            outputDevice.Dispose();
-            outputDevice = null;
-            btnStop.Background = Brushes.Red;
-            btnPlaySideA.Background = (Brush)new BrushConverter().ConvertFrom("#FFDDDDDD");
-            btnPlaySideB.Background = (Brush)new BrushConverter().ConvertFrom("#FFDDDDDD");
-            OnPropertyChanged(nameof(PlayingSideA));
-            OnPropertyChanged(nameof(PlayingSideB));
-            playbackTimer.Stop();
-            PlayBackTime = TimeSpan.FromSeconds(0);
-            OnPropertyChanged(nameof(PlayBackTime));
-            OnPropertyChanged(nameof(PlayedSideDuration));
-        }
-
         private void slSilenceGap_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             UpdateOrderingButtons();
@@ -433,27 +257,6 @@ namespace TapeRecordWizard.Views
             PlayBackTime = TimeSpan.FromSeconds(0);
             OnPropertyChanged(nameof(PlayBackTime));
             OnPropertyChanged(nameof(PlayedSideDuration));
-        }
-
-        private ISampleProvider ApplyFadeInOut(double totalLength,  ISampleProvider source)
-        {
-            NAudio.DelayFadeOutSampleProvider result = null;
-            if(Model.ModelInstance.CurrentPlaylist.FadeInMiliseconds > 0)
-            {
-                result = new NAudio.DelayFadeOutSampleProvider(source, true);
-                result.BeginFadeIn(Model.ModelInstance.CurrentPlaylist.FadeInMiliseconds);
-            }
-            if(Model.ModelInstance.CurrentPlaylist.FadeOutMiliseconds > 0)
-            {
-                if (result is null)
-                {
-                    result = new NAudio.DelayFadeOutSampleProvider(source, false);
-                }
-                result.BeginFadeOut(totalLength - Model.ModelInstance.CurrentPlaylist.FadeOutMiliseconds, Model.ModelInstance.CurrentPlaylist.FadeOutMiliseconds);
-            }
-            if (result is null)
-                return source;
-            return result;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Windows;
 
 namespace TapeRecordWizard.Models
 {
-    public class Model : INotifyPropertyChanged
+    public sealed class Model : BaseModel
     {
 
         #region Private Variables
@@ -16,17 +16,6 @@ namespace TapeRecordWizard.Models
         #region Public properties
         public PlayList CurrentPlaylist { get; set; }
         public Dictionary<string, CassetteType> CassetteTypes { get; private set; }
-        public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
-
-        #region Events
-        public void OnPropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
         #endregion
 
         #region Constructor and Initialization
@@ -80,7 +69,7 @@ namespace TapeRecordWizard.Models
 
         public int DgSongsSelectedItemsCount { get; set; }
 
-        public Song DgSelectedItem { get; set; }
+        public Song DgSongsSelectedItem { get; set; }
 
         public bool CanMoveUp
         {
@@ -92,7 +81,7 @@ namespace TapeRecordWizard.Models
                     {
                         if (DgSongsSelectedIndex > 0)
                         {
-                            if (DgSelectedItem.OrderNo > 1)
+                            if (DgSongsSelectedItem.OrderNo > 1)
                                 return true;
                         }
                     }
@@ -110,7 +99,7 @@ namespace TapeRecordWizard.Models
                     if (DgSongsSelectedItemsCount == 1)
                     {
                         if (DgSongsSelectedIndex < CurrentPlaylist.Songs.Count - 1)
-                            if (DgSelectedItem.OrderNo < CurrentPlaylist.Songs.Count)
+                            if (DgSongsSelectedItem.OrderNo < CurrentPlaylist.Songs.Count)
                                 return true;
                     }
                 }
@@ -165,11 +154,60 @@ namespace TapeRecordWizard.Models
             }
         }
 
+        public bool CanAssignToSideA
+        {
+            get
+            {
+                if (CurrentPlaylist.Songs.Count > 0)
+                {
+                    if (DgSongsSelectedItemsCount == 1)
+                    {
+                        Song song = DgSongsSelectedItem as Song;
+                        if (song.Side != "A")
+                            return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public bool CanAssignToSideB
+        {
+            get
+            {
+                if (CurrentPlaylist.Songs.Count > 0)
+                {
+                    if (DgSongsSelectedItemsCount == 1)
+                    {
+                        Song song = DgSongsSelectedItem as Song;
+                        if (song.Side != "B")
+                            return true;
+                    }
+                }
+                return false;
+            }
+        }
+        public bool CanPlaySideA
+        {
+            get
+            {
+                return CurrentPlaylist.SideASongs?.Count > 0;
+            }
+        }
+        public bool CanPlaySideB
+        {
+            get
+            {
+                return CurrentPlaylist.SideBSongs?.Count > 0;
+            }
+        }
         #endregion
+
+        #region Events
         internal void UpdateDgSelection(int selectionCount)
         {
             this.DgSongsSelectedItemsCount = selectionCount;
-            OnPropertyChanged(nameof(DgSelectedItem));
+            OnPropertyChanged(nameof(DgSongsSelectedItem));
             OnPropertyChanged(nameof(DgSongsSelectedIndex));
             OnPropertyChanged(nameof(DgSongsSelectedItemsCount));
         }
@@ -194,5 +232,18 @@ namespace TapeRecordWizard.Models
             OnPropertyChanged(nameof(NoFitOnSideA));
             OnPropertyChanged(nameof(NoFitOnSideB));
         }
+
+        internal void CanAssignToSideChanged()
+        {
+            OnPropertyChanged(nameof(CanAssignToSideA));
+            OnPropertyChanged(nameof(CanAssignToSideB));
+        }
+
+        internal void CanPlaySideChanged()
+        {
+            OnPropertyChanged(nameof(CanPlaySideA));
+            OnPropertyChanged(nameof(CanPlaySideB));
+        }
+        #endregion
     }
 }

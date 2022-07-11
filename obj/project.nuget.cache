@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XUJo4+Ki6dj6Dli9EK40BYbM4mjRwV6nPDCwWAuvlENzkOGeCz0gl50Y706C+6hWH2fIdxCBEdZ2lz1PF/UH0w==",
+  "dgSpecHash": "yis5dPwsjn6u3kC0Z/yOE95twVJBGcEmqFEZuHK0Amt9TAnXHsY5kLL7TpRqQfcZMxjuhkuHTDZr40keEqO6gA==",
   "success": true,
-  "projectFilePath": "D:\\WORK\\SourceCode\\TapeRecordWizard\\TapeRecordWizard.csproj",
+  "projectFilePath": "E:\\CODE\\TapeRecordWizard\\TapeRecordWizard.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\zloadmns\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\zloadmns\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",

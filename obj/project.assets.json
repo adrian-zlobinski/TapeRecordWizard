@@ -445,11 +445,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\WORK\\SourceCode\\TapeRecordWizard\\TapeRecordWizard.csproj",
+      "projectUniqueName": "E:\\CODE\\TapeRecordWizard\\TapeRecordWizard.csproj",
       "projectName": "TapeRecordWizard",
-      "projectPath": "D:\\WORK\\SourceCode\\TapeRecordWizard\\TapeRecordWizard.csproj",
+      "projectPath": "E:\\CODE\\TapeRecordWizard\\TapeRecordWizard.csproj",
       "packagesPath": "C:\\Users\\zloadmns\\.nuget\\packages\\",
-      "outputPath": "D:\\WORK\\SourceCode\\TapeRecordWizard\\obj\\",
+      "outputPath": "E:\\CODE\\TapeRecordWizard\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\zloadmns\\AppData\\Roaming\\NuGet\\NuGet.Config",

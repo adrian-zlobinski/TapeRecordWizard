@@ -37,7 +37,7 @@
                                    RowHeaderWidth="20" MinWidth="400" Margin="5"
                                    ItemsSource="{Binding CurrentPlaylist.Songs}"
                                    SelectionChanged="dgSongs_SelectionChanged"
-                                   SelectedItem="{Binding DgSelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                                   SelectedItem="{Binding DgSongsSelectedItem, UpdateSourceTrigger=PropertyChanged}"
                                    SelectedIndex="{Binding DgSongsSelectedIndex, UpdateSourceTrigger=PropertyChanged}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Nr." Width="50" Binding="{Binding OrderNo}"/>
@@ -71,13 +71,13 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button x:Name="btnTop" Content="^^" Margin="5" Grid.Column="0" ToolTip="Move to top" Click="btnTop_Click" 
-                            IsEnabled="{Binding DataContext.CanMoveUp,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                            IsEnabled="{Binding CanMoveUp, UpdateSourceTrigger=PropertyChanged}"/>
                         <Button x:Name="btnOneUp" Content="^" Margin="5" Grid.Column="1" ToolTip="Move one up" Click="btnOneUp_Click"
-                            IsEnabled="{Binding DataContext.CanMoveUp,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                            IsEnabled="{Binding CanMoveUp, UpdateSourceTrigger=PropertyChanged}"/>
                         <Button x:Name="btnOneDown" Content="v" Margin="5" Grid.Column="2" ToolTip="Move one down" Click="btnOneDown_Click"
-                            IsEnabled="{Binding DataContext.CanMoveDown, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                            IsEnabled="{Binding CanMoveDown, UpdateSourceTrigger=PropertyChanged}"/>
                         <Button x:Name="btnBottom" Content="vv" Margin="5" Grid.Column="3" ToolTip="Move to bottom" Click="btnBottom_Click"
-                            IsEnabled="{Binding DataContext.CanMoveDown, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                            IsEnabled="{Binding CanMoveDown, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -86,10 +86,10 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button x:Name="btnSideA" Content="Side A" Margin="5" Grid.Column="0" ToolTip="Assign to Side A" Click="btnSideA_Click"
-                            IsEnabled="{Binding CanAssignToSideA, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                            IsEnabled="{Binding CanAssignToSideA}"/>
                         <Button x:Name="btnAutoSideArrange" Content="Auto" Margin="5" Grid.Column="1" ToolTip="Auto arrange songs on cassete side with best fit" Click="btnAutoSideArrange_Click"/>
                         <Button x:Name="btnSideb" Content="Side B" Margin="5" Grid.Column="2" ToolTip="Assign to Side B" Click="btnSideb_Click"
-                            IsEnabled="{Binding CanAssignToSideB, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                            IsEnabled="{Binding CanAssignToSideB}"/>
                     </Grid>
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" x:Name="spFadeIn">
@@ -97,7 +97,7 @@
                             <Slider x:Name="slFadeIn" Minimum="0" Maximum="3" SmallChange="0.1" LargeChange="1" Margin="5"
                                     TickPlacement="BottomRight" Foreground="Black" IsSnapToTickEnabled="True" TickFrequency="0.1"
                                     Width="100" VerticalAlignment="Center"
-                                    Value="{Binding DataContext.CurrentPlaylist.FadeIn, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                                    Value="{Binding CurrentPlaylist.FadeIn, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBlock Text="{Binding ElementName=slFadeIn, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat=0.0 sec.}"
                                      TextAlignment="Right" Width="Auto" VerticalAlignment="Center"/>
                         </StackPanel>
@@ -106,7 +106,7 @@
                             <Slider x:Name="slFadeOut" Minimum="0" Maximum="3" SmallChange="0.1" LargeChange="1" Margin="5"
                                     TickPlacement="BottomRight" Foreground="Black" IsSnapToTickEnabled="True" TickFrequency="0.1"
                                     Width="100" VerticalAlignment="Center"
-                                    Value="{Binding DataContext.CurrentPlaylist.FadeOut, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                                    Value="{Binding CurrentPlaylist.FadeOut, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBlock Text="{Binding ElementName=slFadeOut, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat=0.0 sec.}"
                                      TextAlignment="Right" Width="Auto" VerticalAlignment="Center"/>
                         </StackPanel>
@@ -116,7 +116,7 @@
                         <Slider x:Name="slSilenceGap" Minimum="0" Maximum="3" SmallChange="0.1" LargeChange="1" Margin="5"
                             TickPlacement="BottomRight" Foreground="Black" IsSnapToTickEnabled="True" TickFrequency="0.1"
                                 Width="170" VerticalAlignment="Center" 
-                                Value="{Binding DataContext.CurrentPlaylist.GapBetweenSongs, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                                Value="{Binding CurrentPlaylist.GapBetweenSongs,UpdateSourceTrigger=PropertyChanged}"
                                 ValueChanged="slSilenceGap_ValueChanged"/>
                         <TextBlock Text="{Binding ElementName=slSilenceGap, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat=0.0 sec.}"
                                    TextAlignment="Right" Width="Auto" VerticalAlignment="Center"/>
@@ -129,7 +129,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Button Content="► A" Name="btnPlaySideA" Click="PlaySongs" Margin="5" Tag="SideA" FontSize="30" Padding="10"
-                                IsEnabled="{Binding CanPlaySideA, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}">
+                                IsEnabled="{Binding CanPlaySideA, UpdateSourceTrigger=PropertyChanged}">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Style.Triggers>
@@ -160,7 +160,7 @@
                         </Button>
                         <Button Content="■" Name="btnStop" Click="btnStop_Click" Margin="5" FontSize="30" Padding="10"/>
                         <Button Content="► B" Name="btnPlaySideB" Click="PlaySongs" Margin="5" Tag="SideB" FontSize="30" Padding="10"
-                                IsEnabled="{Binding CanPlaySideB, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}">
+                                IsEnabled="{Binding CanPlaySideB, UpdateSourceTrigger=PropertyChanged}">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Style.Triggers>
@@ -215,9 +215,9 @@
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Total songs:" VerticalAlignment="Center" Margin="0" Padding="1"/>
-                    <TextBlock Text="{Binding TotalSongsCount, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="{Binding CurrentPlaylist.Songs.Count, UpdateSourceTrigger=PropertyChanged}"
                            VerticalAlignment="Center" Margin="0" Padding="1"/>
-                    <TextBlock Text="{Binding TotalDuration, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat=\\(hh\\:mm\\:ss\\)}"
+                    <TextBlock Text="{Binding CurrentPlaylist.TotalDuration, UpdateSourceTrigger=PropertyChanged, StringFormat=\\(hh\\:mm\\:ss\\)}"
                            VerticalAlignment="Center" Margin="0" Padding="1"/>
                 </StackPanel>
             </StatusBarItem>
@@ -225,9 +225,9 @@
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Songs on Side A" VerticalAlignment="Center" Margin="0" Padding="1"/>
-                    <TextBlock Text="{Binding SideASongsCount, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="{Binding CurrentPlaylist.SideASongs.Count, UpdateSourceTrigger=PropertyChanged}"
                        VerticalAlignment="Center" Margin="0" Padding="1"/>
-                    <TextBlock Text="{Binding SideADuration, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat=\\(hh\\:mm\\:ss\\)}"
+                    <TextBlock Text="{Binding CurrentPlaylist.SideADuration, UpdateSourceTrigger=PropertyChanged, StringFormat=\\(hh\\:mm\\:ss\\)}"
                        VerticalAlignment="Center" Margin="0" Padding="1"/>
                 </StackPanel>
             </StatusBarItem>
@@ -235,9 +235,9 @@
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Songs on Side B" VerticalAlignment="Center" Margin="0" Padding="1"/>
-                    <TextBlock Text="{Binding SideBSongsCount, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="{Binding CurrentPlaylist.SideBSongs.Count, UpdateSourceTrigger=PropertyChanged}"
                        VerticalAlignment="Center" Margin="0" Padding="1"/>
-                    <TextBlock Text="{Binding SideBDuration, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat=\\(hh\\:mm\\:ss\\)}"
+                    <TextBlock Text="{Binding CurrentPlaylist.SideBDuration, UpdateSourceTrigger=PropertyChanged, StringFormat=\\(hh\\:mm\\:ss\\)}"
                        VerticalAlignment="Center" Margin="0" Padding="1"/>
                 </StackPanel>
             </StatusBarItem>

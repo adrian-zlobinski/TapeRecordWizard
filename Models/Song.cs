@@ -7,25 +7,30 @@ namespace TapeRecordWizard.Models
 {
     public class Song
     {
-        public string FullFilePath { get; set; }
-
+        #region Private properties
         private TimeSpan? _duration = null;
+        #endregion
+
+        #region Public properties
+        public string FullFilePath { get; set; }
+        public string Side { get; set; }
+        public int OrderNo { get; set; }
+        #endregion
+
+        #region Readonly properties
         public TimeSpan Duration
         {
             get
             {
-                if(!_duration.HasValue)
+                if (!_duration.HasValue)
                 {
                     _duration = new AudioFileReader(FullFilePath).TotalTime;
                 }
                 return _duration.Value;
             }
         }
-        public string Side { get; set; }
-        public int OrderNo { get; set; }
-
-        public string FileName 
-        { 
+        public string FileName
+        {
             get
             {
                 return Path.GetFileName(FullFilePath);
@@ -39,5 +44,6 @@ namespace TapeRecordWizard.Models
                 return Path.GetExtension(FileName);
             }
         }
+        #endregion
     }
 }
