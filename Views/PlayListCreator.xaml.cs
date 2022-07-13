@@ -192,55 +192,16 @@ namespace TapeRecordWizard.Views
         private void PlaySongs(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
-
-            List<Song> songsToPlay = null;
-
             if(btn.Tag.ToString() == "SideA")
             {
-                songsToPlay = Model.ModelInstance.CurrentPlaylist.SideASongs.OrderBy(x=>x.OrderNo).ToList();
-                playingSide = 'A';
+                Model.ModelInstance.Player.PlaySideA();
             }
             if (btn.Tag.ToString() == "SideB")
             {
-                songsToPlay = Model.ModelInstance.CurrentPlaylist.SideBSongs.OrderBy(x => x.OrderNo).ToList();
-                playingSide = 'B';
+                Model.ModelInstance.Player.PlaySideB();
             }
-            btn.Background = Brushes.LightGreen;
             btnStop.Background = (Brush)new BrushConverter().ConvertFrom("#FFDDDDDD");
-
-            if (outputDevice is null)
-            {
-                outputDevice = new WaveOutEvent();
-                outputDevice.PlaybackStopped += OutputDevice_PlaybackStopped;
-            }
-            AudioFileReader firstSong = new AudioFileReader(songsToPlay[0].FullFilePath);
-            
-            ISampleProvider sampleProvider = ApplyFadeInOut(songsToPlay[0].Duration.TotalMilliseconds, firstSong);
-            if (songsToPlay.Count > 1)
-            {
-                for(int i = 1; i < songsToPlay.Count; i++)
-                {
-                    var nextSong = ApplyFadeInOut(songsToPlay[1].Duration.TotalMilliseconds, new AudioFileReader(songsToPlay[i].FullFilePath));
-                    if (slSilenceGap.Value > 0)
-                    {
-                        sampleProvider = sampleProvider.FollowedBy(TimeSpan.FromSeconds(slSilenceGap.Value), nextSong);
-                    }
-                    else
-                    {
-                        sampleProvider = sampleProvider.FollowedBy(nextSong);
-                    }
-                }
-            }
-            //WaveFileWriter.CreateWaveFile16(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "record.wav"), sampleProvider);
-            outputDevice.Init(sampleProvider);
-            outputDevice.Play();
-            playbackTimer.Start();
-            outputDevice.GetPositionTimeSpan();
-            OnPropertyChanged(nameof(PlayingSideA));
-            OnPropertyChanged(nameof(PlayingSideB));
-            OnPropertyChanged(nameof(PlayedSideDuration));
-            firstSong.Dispose();
-            firstSong = null;
+            OnPropertyChanged(nameof(Player));
         }
 
         private void slSilenceGap_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -250,13 +211,9 @@ namespace TapeRecordWizard.Views
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            outputDevice?.Stop();
-            OnPropertyChanged(nameof(PlayingSideA));
-            OnPropertyChanged(nameof(PlayingSideB));
-            playbackTimer.Stop();
-            PlayBackTime = TimeSpan.FromSeconds(0);
-            OnPropertyChanged(nameof(PlayBackTime));
-            OnPropertyChanged(nameof(PlayedSideDuration));
+            Model.ModelInstance.Player.Stop();
+            btnStop.Background = Brushes.Red;
+            OnPropertyChanged(nameof(Player));
         }
     }
 }

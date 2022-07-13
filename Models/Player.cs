@@ -2,21 +2,21 @@
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace TapeRecordWizard.Models
 {
     public class Player : BaseModel
     {
-        private readonly PlayList _playList;
         private WaveOutEvent outputDevice;
+        private List<Song> songsToPlay;
         private char playingSide = '-';
         private System.Timers.Timer playbackTimer;
         public TimeSpan PlayBackTime { get; set; }
 
-        public Player(PlayList playList)
+        public Player()
         {
-            this._playList = playList;
             playbackTimer = new System.Timers.Timer(100) { AutoReset = true };
             playbackTimer.Elapsed += PlaybackTimer_Elapsed;
             PlayBackTime = TimeSpan.FromSeconds(0);
@@ -24,16 +24,66 @@ namespace TapeRecordWizard.Models
 
         public void PlaySideA()
         {
-
+            songsToPlay = Model.ModelInstance.CurrentPlaylist.SideASongs.OrderBy(x => x.OrderNo).ToList();
+            playingSide = 'A';
+            OnPropertyChanged(nameof(PlayingSideA));
+            this.Play();
         }
 
         public void PlaySideB()
-        { 
+        {
+            songsToPlay = Model.ModelInstance.CurrentPlaylist.SideBSongs.OrderBy(x => x.OrderNo).ToList();
+            playingSide = 'B';
+            OnPropertyChanged(nameof(PlayingSideB));
+            this.Play();
+        }
+
+        private void Play()
+        {
+            if (outputDevice is null)
+            {
+                outputDevice = new WaveOutEvent();
+                outputDevice.PlaybackStopped += OutputDevice_PlaybackStopped;
+            }
+            AudioFileReader firstSong = new AudioFileReader(songsToPlay[0].FullFilePath);
+
+            ISampleProvider sampleProvider = ApplyFadeInOut(songsToPlay[0].Duration.TotalMilliseconds, firstSong);
+            if (songsToPlay.Count > 1)
+            {
+                for (int i = 1; i < songsToPlay.Count; i++)
+                {
+                    var nextSong = ApplyFadeInOut(songsToPlay[1].Duration.TotalMilliseconds, new AudioFileReader(songsToPlay[i].FullFilePath));
+                    if (Model.ModelInstance.CurrentPlaylist.GapBetweenSongs > 0)
+                    {
+                        sampleProvider = sampleProvider.FollowedBy(TimeSpan.FromMilliseconds((int)Model.ModelInstance.CurrentPlaylist.GapBetweenSongs*1000), nextSong);
+                    }
+                    else
+                    {
+                        sampleProvider = sampleProvider.FollowedBy(nextSong);
+                    }
+                }
+            }
+            //WaveFileWriter.CreateWaveFile16(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "record.wav"), sampleProvider);
+            outputDevice.Init(sampleProvider);
+            outputDevice.Play();
+            playbackTimer.Start();
+            outputDevice.GetPositionTimeSpan();
+            OnPropertyChanged(nameof(PlayingSideA));
+            OnPropertyChanged(nameof(PlayingSideB));
+            OnPropertyChanged(nameof(PlayedSideDuration));
+            firstSong.Dispose();
+            firstSong = null;
         }
 
         public void Stop()
         {
-
+            outputDevice?.Stop();
+            OnPropertyChanged(nameof(PlayingSideA));
+            OnPropertyChanged(nameof(PlayingSideB));
+            playbackTimer.Stop();
+            PlayBackTime = TimeSpan.FromSeconds(0);
+            OnPropertyChanged(nameof(PlayBackTime));
+            OnPropertyChanged(nameof(PlayedSideDuration));
         }
 
         public TimeSpan PlayedSideDuration
@@ -65,15 +115,23 @@ namespace TapeRecordWizard.Models
             }
         }
 
+        public bool Stopped
+        {
+            get
+            {
+                return outputDevice?.PlaybackState == PlaybackState.Stopped;
+            }
+        }
+
         private void OutputDevice_PlaybackStopped(object sender, StoppedEventArgs e)
         {
-            outputDevice.Dispose();
-            outputDevice = null;
-            btnStop.Background = Brushes.Red;
-            btnPlaySideA.Background = (Brush)new BrushConverter().ConvertFrom("#FFDDDDDD");
-            btnPlaySideB.Background = (Brush)new BrushConverter().ConvertFrom("#FFDDDDDD");
             OnPropertyChanged(nameof(PlayingSideA));
             OnPropertyChanged(nameof(PlayingSideB));
+            OnPropertyChanged(nameof(Stopped));
+            outputDevice.Dispose();
+            outputDevice = null;
+            //btnPlaySideA.Background = (Brush)new BrushConverter().ConvertFrom("#FFDDDDDD");
+            //btnPlaySideB.Background = (Brush)new BrushConverter().ConvertFrom("#FFDDDDDD");
             playbackTimer.Stop();
             PlayBackTime = TimeSpan.FromSeconds(0);
             OnPropertyChanged(nameof(PlayBackTime));

@@ -58,4 +58,3 @@ E:\CODE\TapeRecordWizard\obj\Debug\netcoreapp3.1\TapeRecordWizard.csproj.CopyCom
 E:\CODE\TapeRecordWizard\obj\Debug\netcoreapp3.1\TapeRecordWizard.dll
 E:\CODE\TapeRecordWizard\obj\Debug\netcoreapp3.1\TapeRecordWizard.pdb
 E:\CODE\TapeRecordWizard\obj\Debug\netcoreapp3.1\TapeRecordWizard.genruntimeconfig.cache
-E:\CODE\TapeRecordWizard\obj\Debug\netcoreapp3.1\TapeRecordWizard.csproj.AssemblyReference.cache

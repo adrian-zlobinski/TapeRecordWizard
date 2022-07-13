@@ -133,7 +133,7 @@
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding PlayingSideA, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="True">
+                                        <DataTrigger Binding="{Binding Player.PlayingSideA, UpdateSourceTrigger=PropertyChanged}" Value="True">
                                             <DataTrigger.EnterActions>
                                                 <BeginStoryboard x:Name="sb1">
                                                     <BeginStoryboard.Storyboard>
@@ -164,7 +164,7 @@
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding PlayingSideB, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="True">
+                                        <DataTrigger Binding="{Binding Player.PlayingSideB}" Value="True">
                                             <DataTrigger.EnterActions>
                                                 <BeginStoryboard x:Name="sb1">
                                                     <BeginStoryboard.Storyboard>
@@ -191,9 +191,9 @@
                         </Button>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding PlayBackTime, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh':'mm':'ss}}"
+                        <TextBlock Text="{Binding Player.PlayBackTime, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh':'mm':'ss}}"
                                FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <TextBlock Text="{Binding PlayedSideDuration, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh':'mm':'ss}}"
+                        <TextBlock Text="{Binding Player.PlayedSideDuration, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:hh':'mm':'ss}}"
                                FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         
                     </StackPanel>

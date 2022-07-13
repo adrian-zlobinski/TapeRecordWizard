@@ -16,6 +16,8 @@ namespace TapeRecordWizard.Models
         #region Public properties
         public PlayList CurrentPlaylist { get; set; }
         public Dictionary<string, CassetteType> CassetteTypes { get; private set; }
+        public Player Player { get; set; }
+
         #endregion
 
         #region Constructor and Initialization
@@ -35,6 +37,7 @@ namespace TapeRecordWizard.Models
         private Model()
         {
             InitializeCassetteTypes();
+            Player = new Player();
         }
 
         private void InitializeCassetteTypes()
