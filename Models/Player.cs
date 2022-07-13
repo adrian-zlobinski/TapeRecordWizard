@@ -26,7 +26,6 @@ namespace TapeRecordWizard.Models
         {
             songsToPlay = Model.ModelInstance.CurrentPlaylist.SideASongs.OrderBy(x => x.OrderNo).ToList();
             playingSide = 'A';
-            OnPropertyChanged(nameof(PlayingSideA));
             this.Play();
         }
 
@@ -34,7 +33,6 @@ namespace TapeRecordWizard.Models
         {
             songsToPlay = Model.ModelInstance.CurrentPlaylist.SideBSongs.OrderBy(x => x.OrderNo).ToList();
             playingSide = 'B';
-            OnPropertyChanged(nameof(PlayingSideB));
             this.Play();
         }
 
@@ -71,6 +69,7 @@ namespace TapeRecordWizard.Models
             OnPropertyChanged(nameof(PlayingSideA));
             OnPropertyChanged(nameof(PlayingSideB));
             OnPropertyChanged(nameof(PlayedSideDuration));
+            OnPropertyChanged(nameof(Stopped));
             firstSong.Dispose();
             firstSong = null;
         }

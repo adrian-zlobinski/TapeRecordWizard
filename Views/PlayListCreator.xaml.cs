@@ -200,8 +200,6 @@ namespace TapeRecordWizard.Views
             {
                 Model.ModelInstance.Player.PlaySideB();
             }
-            btnStop.Background = (Brush)new BrushConverter().ConvertFrom("#FFDDDDDD");
-            OnPropertyChanged(nameof(Player));
         }
 
         private void slSilenceGap_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -212,8 +210,6 @@ namespace TapeRecordWizard.Views
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             Model.ModelInstance.Player.Stop();
-            btnStop.Background = Brushes.Red;
-            OnPropertyChanged(nameof(Player));
         }
     }
 }
