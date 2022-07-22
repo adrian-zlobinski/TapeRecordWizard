@@ -61,6 +61,10 @@
                 <StackPanel Orientation="Vertical">
                     <Button Content="Add files..." Margin="5" Name="btnAddFile" Click="btnAddFile_Click"
                             IsEnabled="{Binding CanAddSongs}"/>
+                    <Button Content="Add virtual song..." Margin="5" Name="btnAddVirtualSong" Click="btnAddVirtualSong_Click"
+                            IsEnabled="{Binding CanAddSongs}"/>
+                    <Button Content="Add virtual from CSV..." Margin="5" Name="btnAddFromCSV" Click="btnAddFromCSV_Click"
+                            IsEnabled="{Binding CanAddSongs}"/>
                     <Button Content="Remove selected file(s)" Margin="5" Name="btnRemoveSelection" Click="btnRemoveSelection_Click"/>
                     <Button Content="Remove all files" Margin="5" Name="btnRemoveAll" Click="btnRemoveAll_Click"/>
                     <Grid>

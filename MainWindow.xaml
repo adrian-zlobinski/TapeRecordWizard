@@ -9,9 +9,9 @@
     <Grid>
         <Menu IsMainMenu="True">
             <MenuItem Header="_Plik">
-                <MenuItem Header="_Nowa playlista" Click="MenuItem_Click"/>
-                <MenuItem Header="_Otwórz playlistę" />
-                <MenuItem Header="Zapi_sz playlistę" />
+                <MenuItem Header="_Nowa playlista" Name="miNewPlaylist"  Click="miNewPlaylist_Click"/>
+                <MenuItem Header="_Otwórz playlistę"  />
+                <MenuItem Header="Zapi_sz playlistę" Name="miSavePlaylist" Click="miSavePlaylist_Click"/>
             </MenuItem>
         </Menu>
     </Grid>

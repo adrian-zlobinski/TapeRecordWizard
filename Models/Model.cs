@@ -1,6 +1,11 @@
-﻿using System;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 
@@ -194,14 +199,14 @@ namespace TapeRecordWizard.Models
         {
             get
             {
-                return CurrentPlaylist.SideASongs?.Count > 0;
+                return CurrentPlaylist.SideASongs?.Count > 0 && !CurrentPlaylist.SideASongs.Any(x=>x.IsVirtual);
             }
         }
         public bool CanPlaySideB
         {
             get
             {
-                return CurrentPlaylist.SideBSongs?.Count > 0;
+                return CurrentPlaylist.SideBSongs?.Count > 0 && !CurrentPlaylist.SideBSongs.Any(x=>x.IsVirtual);
             }
         }
         #endregion
@@ -246,6 +251,29 @@ namespace TapeRecordWizard.Models
         {
             OnPropertyChanged(nameof(CanPlaySideA));
             OnPropertyChanged(nameof(CanPlaySideB));
+        }
+        #endregion
+
+        #region Public Methods
+        public void AddVirtualSongsFromCSV(string pathToCsvFile)
+        {
+            var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ";"
+            };
+
+            using(var reader = new StreamReader(pathToCsvFile))
+            {
+                using (var csv = new CsvReader(reader, configuration))
+                {
+                    csv.Context.RegisterClassMap<VirtualSongMap>();
+                    var songs = csv.GetRecords<VirtualSong>().ToArray();
+                    foreach(var vs in songs)
+                    {
+                        this.CurrentPlaylist.Songs.Add(new Song(vs.SongName, vs.Duration) { OrderNo = this.CurrentPlaylist.Songs.Count + 1 });
+                    }
+                }
+            }
         }
         #endregion
     }

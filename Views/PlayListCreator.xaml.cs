@@ -54,6 +54,30 @@ namespace TapeRecordWizard.Views
             RefreshSongsGrid();
         }
 
+        private void btnAddVirtualSong_Click(object sender, RoutedEventArgs e)
+        {
+            var frm = new VirtualSong(this);
+            if(frm.ShowDialog() == true)
+            {
+                Model.ModelInstance.CurrentPlaylist.Songs.Add(frm.Song);
+            }
+            RefreshSongsGrid();
+        }
+
+        private void btnAddFromCSV_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            //ofd.Filter = "All Music Files|*.wav;*.aac;*.wma;*.mp2;*.mp3;.WAV;*.AAC;*.WMA;*.MP2;*.MP3";
+            ofd.Filter = "CSV Files|*.csv;*.CSV";
+            ofd.Multiselect = false;
+            if (ofd.ShowDialog().Value)
+            {
+                Model.ModelInstance.AddVirtualSongsFromCSV(ofd.FileName);
+            }
+            RefreshSongsGrid();
+        }
+
+
         private void btnRemoveSelection_Click(object sender, RoutedEventArgs e)
         {
             foreach (var row in dgSongs.SelectedItems)
@@ -211,5 +235,6 @@ namespace TapeRecordWizard.Views
         {
             Model.ModelInstance.Player.Stop();
         }
+
     }
 }

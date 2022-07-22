@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace TapeRecordWizard.Models
 {
     public sealed class PlayList : BaseModel
@@ -24,6 +23,7 @@ namespace TapeRecordWizard.Models
         #endregion
 
         #region Readonly properties
+        
         private int GapBetweenSongsMiliseconds
         {
             get
@@ -31,6 +31,7 @@ namespace TapeRecordWizard.Models
                 return (int)(GapBetweenSongs * 1000);
             }
         }
+        
         public List<Song> SideASongs
         {
             get
@@ -38,6 +39,7 @@ namespace TapeRecordWizard.Models
                 return Songs.Where(x => x.Side == "A").ToList();
             }
         }
+        
         public List<Song> SideBSongs
         {
             get
@@ -45,6 +47,7 @@ namespace TapeRecordWizard.Models
                 return Songs.Where(x => x.Side == "B").ToList();
             }
         }
+        
         public TimeSpan TotalDuration
         {
             get
@@ -59,6 +62,7 @@ namespace TapeRecordWizard.Models
                 return result;
             }
         }
+        
         public TimeSpan SideADuration
         {
             get
@@ -72,6 +76,7 @@ namespace TapeRecordWizard.Models
                 return result;
             }
         }
+        
         public TimeSpan SideBDuration
         {
             get
@@ -85,6 +90,7 @@ namespace TapeRecordWizard.Models
                 return result;
             }
         }
+        
         public bool SongsFitOnTape
         {
             get
@@ -98,6 +104,7 @@ namespace TapeRecordWizard.Models
             }
         }
 
+        
         public bool SongsFitOnSideA
         {
             get
@@ -111,6 +118,7 @@ namespace TapeRecordWizard.Models
             }
         }
 
+        
         public bool SongsFitOnSideB
         {
             get
@@ -124,6 +132,7 @@ namespace TapeRecordWizard.Models
             }
         }
 
+        
         public double FadeInMiliseconds
         {
             get
@@ -132,6 +141,7 @@ namespace TapeRecordWizard.Models
             }
         }
 
+        
         public double FadeOutMiliseconds
         {
             get

@@ -10,12 +10,18 @@
     <Compile Update="Views\PlayListCreator.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\VirtualSong.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\PlayListCreator.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\VirtualSong.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
