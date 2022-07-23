@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Windows;
 
 namespace TapeRecordWizard.Models
@@ -209,6 +210,19 @@ namespace TapeRecordWizard.Models
                 return CurrentPlaylist.SideBSongs?.Count > 0 && !CurrentPlaylist.SideBSongs.Any(x=>x.IsVirtual);
             }
         }
+
+        public string WindowTitle
+        {
+            get
+            {
+                string result = "Tape Record Wizard";
+                if(this.CurrentPlaylist!=null && this.CurrentPlaylist.Name.Length>0)
+                {
+                    result += " - ["+this.CurrentPlaylist.Name + "]";
+                }
+                return result;
+            }
+        }
         #endregion
 
         #region Events
@@ -274,6 +288,25 @@ namespace TapeRecordWizard.Models
                     }
                 }
             }
+        }
+        #endregion
+
+        #region Json methods
+        public void LoadPlaylistFromJsonFile(string filePath)
+        {
+            var jsonOptions = new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                IgnoreReadOnlyProperties = true,
+                Converters = {
+                        new Json.TimeSpanConverter() ,
+                        new Json.SongConverter()
+                    }
+            };
+            string json = File.ReadAllText(filePath);
+            CurrentPlaylist = System.Text.Json.JsonSerializer.Deserialize<PlayList>(json, jsonOptions);
+            CurrentPlaylist.CassetteType = this.CassetteTypes.First(x => x.Key == CurrentPlaylist.CassetteType.Name).Value;
+            OnPropertyChanged(nameof(WindowTitle));
         }
         #endregion
     }

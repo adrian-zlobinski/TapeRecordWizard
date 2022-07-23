@@ -23,11 +23,12 @@
                   ItemsSource="{Binding CassetteTypes}"
                   DisplayMemberPath="Key"
                   SelectedValuePath="Value"
-                  SelectedValue="{Binding CurrentPlaylist.CassetteType}"
+                          IsSynchronizedWithCurrentItem="True"
+                  SelectedValue="{Binding CurrentPlaylist.CassetteType, Mode=TwoWay}"
                       SelectionChanged="cmbCassetteType_SelectionChanged">
                 </ComboBox>
                 <Label Content="Playlist name" VerticalAlignment="Center"/>
-                <TextBox Width="200" VerticalAlignment="Center"/>
+                <TextBox Width="200" VerticalAlignment="Center" Text="{Binding CurrentPlaylist.Name}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2">
                 <DataGrid x:Name="dgSongs" AutoGenerateColumns="False"

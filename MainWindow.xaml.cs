@@ -27,6 +27,7 @@ namespace TapeRecordWizard
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = Models.Model.ModelInstance;
         }
 
         private void miNewPlaylist_Click(object sender, RoutedEventArgs e)
@@ -57,7 +58,7 @@ namespace TapeRecordWizard
                 file.Write(json);
                 file.Close();
             }
-            System.Windows.MessageBox.Show("Playlista zapisana");
+            System.Windows.MessageBox.Show(this, "Playlist saved", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void miOpenPlaylist_Click(object sender, RoutedEventArgs e)
@@ -67,17 +68,7 @@ namespace TapeRecordWizard
             ofd.Multiselect = false;
             if(ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                var jsonOptions = new JsonSerializerOptions()
-                {
-                    WriteIndented = true,
-                    IgnoreReadOnlyProperties = true,
-                    Converters = {
-                        new Json.TimeSpanConverter() ,
-                        new Json.SongConverter()
-                    }
-                };
-                string json = File.ReadAllText(ofd.FileName);
-                Model.ModelInstance.CurrentPlaylist = System.Text.Json.JsonSerializer.Deserialize<PlayList>(json, jsonOptions);
+                Model.ModelInstance.LoadPlaylistFromJsonFile(ofd.FileName);
                 var newPlayList = new Views.PlayListCreator(this);
                 newPlayList.DataContext = Models.Model.ModelInstance;
                 newPlayList.ShowDialog();
