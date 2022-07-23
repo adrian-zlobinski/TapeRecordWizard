@@ -13,5 +13,7 @@ namespace TapeRecordWizard.Models
                 return new TimeSpan(TotalLength.Ticks / 2);
             }
         }
+
+
     }
 }

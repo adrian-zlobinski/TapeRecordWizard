@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace TapeRecordWizard.Models
 {
@@ -32,6 +33,7 @@ namespace TapeRecordWizard.Models
             }
         }
         
+        [JsonIgnore]
         public List<Song> SideASongs
         {
             get
@@ -39,7 +41,8 @@ namespace TapeRecordWizard.Models
                 return Songs.Where(x => x.Side == "A").ToList();
             }
         }
-        
+
+        [JsonIgnore]
         public List<Song> SideBSongs
         {
             get
