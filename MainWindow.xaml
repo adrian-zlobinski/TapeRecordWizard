@@ -8,10 +8,10 @@
         Title="{Binding WindowTitle, UpdateSourceTrigger=PropertyChanged}" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
         <Menu IsMainMenu="True">
-            <MenuItem Header="_Plik">
-                <MenuItem Header="_Nowa playlista" Name="miNewPlaylist"  Click="miNewPlaylist_Click"/>
-                <MenuItem Header="_Otwórz playlistę" Name="miOpenPlaylist" Click="miOpenPlaylist_Click" />
-                <MenuItem Header="Zapi_sz playlistę" Name="miSavePlaylist" Click="miSavePlaylist_Click"/>
+            <MenuItem Header="_File">
+                <MenuItem Header="_New playlist" Name="miNewPlaylist"  Click="miNewPlaylist_Click"/>
+                <MenuItem Header="_Open playlist" Name="miOpenPlaylist" Click="miOpenPlaylist_Click" />
+                <MenuItem Header="_Save playlist" Name="miSavePlaylist" Click="miSavePlaylist_Click"/>
             </MenuItem>
         </Menu>
     </Grid>

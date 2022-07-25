@@ -304,7 +304,8 @@ namespace TapeRecordWizard.Models
                     }
             };
             string json = File.ReadAllText(filePath);
-            CurrentPlaylist = System.Text.Json.JsonSerializer.Deserialize<PlayList>(json, jsonOptions);
+            CurrentPlaylist = JsonSerializer.Deserialize<PlayList>(json, jsonOptions);
+            CurrentPlaylist.Songs = CurrentPlaylist.Songs.OrderBy(x => x.OrderNo).ToList();
             CurrentPlaylist.CassetteType = this.CassetteTypes.First(x => x.Key == CurrentPlaylist.CassetteType.Name).Value;
             OnPropertyChanged(nameof(WindowTitle));
         }
