@@ -219,10 +219,12 @@ namespace TapeRecordWizard.Views
             if(btn.Tag.ToString() == "SideA")
             {
                 Model.ModelInstance.Player.PlaySideA();
+                Model.ModelInstance.OnPropertyChanged(nameof(Model.CanPlaySideB));
             }
             if (btn.Tag.ToString() == "SideB")
             {
                 Model.ModelInstance.Player.PlaySideB();
+                Model.ModelInstance.OnPropertyChanged(nameof(Model.CanPlaySideA));
             }
         }
 
@@ -234,6 +236,8 @@ namespace TapeRecordWizard.Views
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             Model.ModelInstance.Player.Stop();
+            Model.ModelInstance.OnPropertyChanged(nameof(Model.CanPlaySideA));
+            Model.ModelInstance.OnPropertyChanged(nameof(Model.CanPlaySideB));
         }
 
     }

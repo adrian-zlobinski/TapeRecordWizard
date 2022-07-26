@@ -200,14 +200,14 @@ namespace TapeRecordWizard.Models
         {
             get
             {
-                return CurrentPlaylist.SideASongs?.Count > 0 && !CurrentPlaylist.SideASongs.Any(x=>x.IsVirtual);
+                return CurrentPlaylist.SideASongs?.Count > 0 && !CurrentPlaylist.SideASongs.Any(x=>x.IsVirtual) && !Player.PlayingSideB;
             }
         }
         public bool CanPlaySideB
         {
             get
             {
-                return CurrentPlaylist.SideBSongs?.Count > 0 && !CurrentPlaylist.SideBSongs.Any(x=>x.IsVirtual);
+                return CurrentPlaylist.SideBSongs?.Count > 0 && !CurrentPlaylist.SideBSongs.Any(x=>x.IsVirtual) && !Player.PlayingSideA;
             }
         }
 
