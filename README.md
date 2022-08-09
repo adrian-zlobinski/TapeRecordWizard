@@ -21,8 +21,13 @@ Timer after start playing to let you start recording on tape deck.
 Allow normalization option of songs without changing source files.
 Add Batch option to work with many playlists
 
+## Level 4 Functionality
+Allow to play from youtube using
 
+https://www.nuget.org/packages/YoutubeExplode
 
+## Level 5 Functionality
+Allot to play from Tidal
 
 
 
