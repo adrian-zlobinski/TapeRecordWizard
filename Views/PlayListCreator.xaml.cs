@@ -219,13 +219,12 @@ namespace TapeRecordWizard.Views
             if(btn.Tag.ToString() == "SideA")
             {
                 Model.ModelInstance.Player.PlaySideA();
-                Model.ModelInstance.OnPropertyChanged(nameof(Model.CanPlaySideB));
             }
             if (btn.Tag.ToString() == "SideB")
             {
                 Model.ModelInstance.Player.PlaySideB();
-                Model.ModelInstance.OnPropertyChanged(nameof(Model.CanPlaySideA));
             }
+            Model.ModelInstance.CanPlaySideChanged();
         }
 
         private void slSilenceGap_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

@@ -38,6 +38,10 @@ namespace TapeRecordWizard.Models
 
         private void Play()
         {
+            if(PlayingSideA || PlayingSideB)
+            {
+                return;
+            }
             if (outputDevice is null)
             {
                 outputDevice = new WaveOutEvent();
@@ -70,6 +74,7 @@ namespace TapeRecordWizard.Models
             OnPropertyChanged(nameof(PlayingSideB));
             OnPropertyChanged(nameof(PlayedSideDuration));
             OnPropertyChanged(nameof(Stopped));
+            Model.ModelInstance.CanPlaySideChanged();
             firstSong.Dispose();
             firstSong = null;
         }
@@ -83,6 +88,7 @@ namespace TapeRecordWizard.Models
             PlayBackTime = TimeSpan.FromSeconds(0);
             OnPropertyChanged(nameof(PlayBackTime));
             OnPropertyChanged(nameof(PlayedSideDuration));
+            Model.ModelInstance.CanPlaySideChanged();
         }
 
         public TimeSpan PlayedSideDuration
@@ -135,6 +141,7 @@ namespace TapeRecordWizard.Models
             PlayBackTime = TimeSpan.FromSeconds(0);
             OnPropertyChanged(nameof(PlayBackTime));
             OnPropertyChanged(nameof(PlayedSideDuration));
+            Model.ModelInstance.CanPlaySideChanged();
         }
 
 
